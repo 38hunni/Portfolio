@@ -45,6 +45,54 @@ readMoreBtn.addEventListener("click", () => {
 	readMoreBtn.textContent = hidden ? "Read More" : "Read Less";
 });
 
+// ===== SLIDE-IN PROJECT CARDS (horizontal) =====
+// ===== SLIDE-IN PROJECT CARDS =====
+const projectCards = document.querySelectorAll(".project-card");
+const observer = new IntersectionObserver(
+	(entries) => {
+		entries.forEach((entry, index) => {
+			if (entry.isIntersecting) {
+				setTimeout(() => {
+					entry.target.classList.add("show");
+				}, index * 150);
+				observer.unobserve(entry.target);
+			}
+		});
+	},
+	{ threshold: 0.3 }
+);
+projectCards.forEach((card) => observer.observe(card));
+
+const projectScroll = document.querySelector(".project-scroll");
+const leftBtn = document.querySelector(".carousel-btn.left");
+const rightBtn = document.querySelector(".carousel-btn.right");
+
+// Function to update button states
+function updateButtons() {
+	const scrollLeft = projectScroll.scrollLeft;
+	const maxScroll = projectScroll.scrollWidth - projectScroll.clientWidth;
+
+	leftBtn.disabled = scrollLeft <= 0;
+	rightBtn.disabled = scrollLeft >= maxScroll - 1; // small tolerance
+}
+
+// Initial check
+updateButtons();
+
+// Scroll on button click
+rightBtn.addEventListener("click", () => {
+	projectScroll.scrollBy({ left: 320, behavior: "smooth" });
+	setTimeout(updateButtons, 400); // delay for smooth scroll
+});
+
+leftBtn.addEventListener("click", () => {
+	projectScroll.scrollBy({ left: -320, behavior: "smooth" });
+	setTimeout(updateButtons, 400);
+});
+
+// Update on manual scroll (drag/trackpad)
+projectScroll.addEventListener("scroll", updateButtons);
+
 /* ==========
    Scroll To Top
 ========== */
